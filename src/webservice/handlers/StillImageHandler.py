@@ -28,7 +28,7 @@ class StillImageHandlerImpl(BaseHandler):
         hflip = computeOptions.get_boolean_arg("hflip", False)
         iso = computeOptions.get_int_arg("iso")
         shutter_speed = computeOptions.get_int_arg("ss")
-        settle_time = computeOptions.get_int_arg("st")
+        settle_time = computeOptions.get_int_arg("st", 2)
         hres = computeOptions.get_int_arg("hres", 1280)
         vres = computeOptions.get_int_arg("vres", 720)
 
