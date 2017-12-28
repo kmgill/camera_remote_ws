@@ -3,4 +3,5 @@ Copyright (c) 2017 Jet Propulsion Laboratory,
 California Institute of Technology.  All rights reserved
 """
 
-import SayHiHandler.py
+import StillImageHandler
+import SayHiHandler

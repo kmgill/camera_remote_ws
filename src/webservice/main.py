@@ -164,8 +164,8 @@ if __name__ == "__main__":
 
     log.info("""
      ___    _____     ___
-    /_ /|  /____/ \  /_ /|       ** NAME GOES HERE **
-    | | | |  __ \ /| | | |       Solar System Dynamics Group
+    /_ /|  /____/ \  /_ /|       Raspberry Pi Camera Remote API
+    | | | |  __ \ /| | | |       Created by: Kevin M. Gill
  ___| | | | |__) |/  | | |__     Jet Propulsion Laboratory
 /___| | | |  ___/    | |/__ /|   Pasadena, CA, USA
 |_____|/  |_|/       |_____|/

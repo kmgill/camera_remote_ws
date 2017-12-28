@@ -14,9 +14,6 @@ import re
 from pytz import UTC, timezone
 import types
 import numpy as np
-import cspice
-import math
-from spicekit import spicekit
 
 AVAILABLE_HANDLERS = []
 AVAILABLE_INITIALIZERS = []
