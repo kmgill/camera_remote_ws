@@ -37,7 +37,6 @@ class StillImageHandlerImpl(BaseHandler):
         awb_mode = computeOptions.get_argument("awb")
 
         bytes = BytesIO()
-        #with picamera.PiCamera(resolution=(hres, vres),framerate=Fraction(1, 6), sensor_mode=3) as camera:
 
         self.camera.hflip = vflip
         self.camera.vflip = hflip
