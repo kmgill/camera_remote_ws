@@ -36,6 +36,7 @@ class StillImageHandlerImpl(BaseHandler):
         exposure_mode = computeOptions.get_argument("ex")
         awb_mode = computeOptions.get_argument("awb")
         channel = computeOptions.get_argument("channel")
+        grey = computeOptions.get_boolean_arg("grey", False)
 
         bytes = BytesIO()
 
@@ -69,6 +70,8 @@ class StillImageHandlerImpl(BaseHandler):
             else:
                 raise ProcessingException("Invalid image color channel '%s' specified"%channel)
 
+        if grey is True:
+            img = img.convert(mode='L')
 
         img_bytes = BytesIO()
         img.save(img_bytes, "JPEG")
