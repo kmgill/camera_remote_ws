@@ -13,6 +13,7 @@ from webmodel import BaseHandler, service_handler, ContentTypes, ProcessingExcep
 from time import sleep
 from fractions import Fraction
 from cam.Camera import Camera
+from datetime import datetime
 
 @service_handler
 class StillImageHandlerImpl(BaseHandler):
@@ -26,9 +27,15 @@ class StillImageHandlerImpl(BaseHandler):
         BaseHandler.__init__(self)
 
     @staticmethod
-    def __annotate(img, text, size, color):
+    def __annotate(img, text, size=16, color="white", time_format="%Y-%m-%d %H:%M:%S", **args):
         if text is None:
             return
+
+        now = datetime.now()
+        args["time"] = now.strftime(time_format)
+
+        text = text.format(**args)
+
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype("LiberationSans-Regular.ttf", size)
         draw.text((0, 0), text, color, font=font)
@@ -69,6 +76,7 @@ class StillImageHandlerImpl(BaseHandler):
         annotate = computeOptions.get_argument("text", None)
         text_size = computeOptions.get_int_arg("textsize", 16)
         text_color = computeOptions.get_argument("textcolor", "white")
+        time_format = computeOptions.get_argument("time_format", "%Y-%m-%d %H:%M:%S")
 
         camera = Camera()
         output = camera.capture(vflip=vflip,
@@ -84,7 +92,23 @@ class StillImageHandlerImpl(BaseHandler):
         img = Image.fromarray(output)
 
         if annotate is not None:
-            StillImageHandlerImpl.__annotate(img, annotate, text_size, text_color)
+            StillImageHandlerImpl.__annotate(img,
+                                             annotate,
+                                             text_size,
+                                             text_color,
+                                             time_format=time_format,
+                                             st=settle_time,
+                                             iso=iso,
+                                             vflip=vflip,
+                                             hflip=hflip,
+                                             ss=shutter_speed,
+                                             hres=hres,
+                                             vres=vres,
+                                             ex=exposure_mode,
+                                             awb_mode=awb_mode,
+                                             channel=channel,
+                                             grey=grey,
+                                             md=sensor_mode)
 
         if channel is not None:
             img = StillImageHandlerImpl.__split(img, channel)
