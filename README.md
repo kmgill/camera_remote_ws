@@ -12,4 +12,23 @@ Goals:
  7. ???
  8. Profit!
  
+ ## Endpoints
  
+ ### /still
+ Captures a still image from the camera
+ 
+ #### Parameters
+ |parameter|type|values (example)|description|
+ |---------|----|------|-----------|
+ |iso|integer|0-800|Capture ISO|
+ |ss|integer|0-10000000|Shutter speed (microseconds)|
+ |hres|integer|1-3264|Horizontal image size|
+ |vres|integer|1-2464|Vertical image size|
+ |ex|string| |Exposure Mode|
+ |channel|char|r\|g\|b|Color channel|
+ |grey|boolean|true\|false|Force greyscale|
+ |md|integer|1-...|Sensor Mode (see Raspiberry Pi Camera Module Docs)|
+ |text|string| |Image annotation text|
+ |textsize|integer|1-...|Annotation text size|
+ |textcolor|string|white\|black\|etc|Annotation text color|
+ |time_format|string|%c\|%Y-%m-%d %H:%M:%S|Time format (python strftime)|
