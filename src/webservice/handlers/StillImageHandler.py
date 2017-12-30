@@ -10,6 +10,7 @@ from io import BytesIO
 from webmodel import BaseHandler, service_handler, ContentTypes, ProcessingException
 from time import sleep
 from fractions import Fraction
+from cam.Camera import Camera
 
 @service_handler
 class StillImageHandlerImpl(BaseHandler):
@@ -22,42 +23,33 @@ class StillImageHandlerImpl(BaseHandler):
     def __init__(self):
         BaseHandler.__init__(self)
 
-        self.camera = picamera.PiCamera()
-
     def handle(self, computeOptions, **args):
 
         vflip = computeOptions.get_boolean_arg("vflip", False)
         hflip = computeOptions.get_boolean_arg("hflip", False)
         iso = computeOptions.get_int_arg("iso")
-        shutter_speed = computeOptions.get_int_arg("ss")
+        shutter_speed = computeOptions.get_int_arg("ss", None)
         settle_time = computeOptions.get_int_arg("st", 0)
-        hres = computeOptions.get_int_arg("hres", 1280)
-        vres = computeOptions.get_int_arg("vres", 720)
+        hres = computeOptions.get_int_arg("hres", 3264)
+        vres = computeOptions.get_int_arg("vres", 2464)
         exposure_mode = computeOptions.get_argument("ex")
         awb_mode = computeOptions.get_argument("awb")
         channel = computeOptions.get_argument("channel")
         grey = computeOptions.get_boolean_arg("grey", False)
+        sensor_mode = computeOptions.get_int_arg("md", 0)
 
-        bytes = BytesIO()
+        camera = Camera()
+        output = camera.capture(vflip=vflip,
+                                hflip=hflip,
+                                iso=iso,
+                                shutter_speed=shutter_speed,
+                                resolution=(hres, vres),
+                                exposure_mode=exposure_mode,
+                                awb_mode=awb_mode,
+                                settle_time=settle_time,
+                                sensor_mode=sensor_mode)
 
-        self.camera.hflip = vflip
-        self.camera.vflip = hflip
-        self.camera.resolution = (hres, vres)
-        if iso is not None:
-            self.camera.iso = iso
-        if shutter_speed is not None:
-            self.camera.shutter_speed = shutter_speed
-        if exposure_mode is not None:
-            self.camera.exposure_mode = exposure_mode
-        if awb_mode is not None:
-            self.camera.awb_mode = awb_mode
-
-        if settle_time is not None:
-            sleep(settle_time)
-
-        self.camera.capture(bytes, format='jpeg')
-        bytes.seek(0)
-        img = Image.open(bytes)
+        img = Image.fromarray(output)
 
         if channel is not None:
             r, g, b = img.split()
@@ -74,15 +66,16 @@ class StillImageHandlerImpl(BaseHandler):
             img = img.convert(mode='L')
 
         img_bytes = BytesIO()
-        img.save(img_bytes, "JPEG")
-        class SimpleResult(object):
-            def __init__(self, result):
-                self.result = result
+        img.save(img_bytes, "PNG")
+        return StillImageResult(img_bytes.getvalue())
 
-            def getContentType(self):
-                return ContentTypes.JPEG
 
-            def toImage(self):
-                return self.result
+class StillImageResult:
+    def __init__(self, result):
+        self.result = result
 
-        return SimpleResult(img_bytes.getvalue())
+    def getContentType(self):
+        return ContentTypes.PNG
+
+    def toImage(self):
+        return self.result
