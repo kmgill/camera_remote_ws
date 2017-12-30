@@ -3,6 +3,8 @@
 import time
 import picamera
 import PIL.Image as Image
+from PIL import ImageFont
+from PIL import ImageDraw
 import numpy as np
 import os
 import sys
@@ -23,6 +25,33 @@ class StillImageHandlerImpl(BaseHandler):
     def __init__(self):
         BaseHandler.__init__(self)
 
+    @staticmethod
+    def __annotate(img, text, size, color):
+        if text is None:
+            return
+        draw = ImageDraw.Draw(img)
+        font = ImageFont.truetype("LiberationSans-Regular.ttf", size)
+        draw.text((0, 0), text, color, font=font)
+
+    @staticmethod
+    def __split(img, channel):
+        if channel is not None:
+            r, g, b = img.split()
+            if channel == 'r':
+                img = r
+            elif channel == 'g':
+                img = g
+            elif channel == 'b':
+                img = b
+            else:
+                raise ProcessingException("Invalid image color channel '%s' specified"%channel)
+        return img
+
+    @staticmethod
+    def __grey(img):
+        img = img.convert(mode='L')
+        return img
+
     def handle(self, computeOptions, **args):
 
         vflip = computeOptions.get_boolean_arg("vflip", False)
@@ -37,6 +66,9 @@ class StillImageHandlerImpl(BaseHandler):
         channel = computeOptions.get_argument("channel")
         grey = computeOptions.get_boolean_arg("grey", False)
         sensor_mode = computeOptions.get_int_arg("md", 0)
+        annotate = computeOptions.get_argument("text", None)
+        text_size = computeOptions.get_int_arg("textsize", 16)
+        text_color = computeOptions.get_argument("textcolor", "white")
 
         camera = Camera()
         output = camera.capture(vflip=vflip,
@@ -51,19 +83,14 @@ class StillImageHandlerImpl(BaseHandler):
 
         img = Image.fromarray(output)
 
+        if annotate is not None:
+            StillImageHandlerImpl.__annotate(img, annotate, text_size, text_color)
+
         if channel is not None:
-            r, g, b = img.split()
-            if channel == 'r':
-                img = r
-            elif channel == 'g':
-                img = g
-            elif channel == 'b':
-                img = b
-            else:
-                raise ProcessingException("Invalid image color channel '%s' specified"%channel)
+            img = StillImageHandlerImpl.__split(img, channel)
 
         if grey is True:
-            img = img.convert(mode='L')
+            img = StillImageHandlerImpl.__grey(img)
 
         img_bytes = BytesIO()
         img.save(img_bytes, "PNG")
