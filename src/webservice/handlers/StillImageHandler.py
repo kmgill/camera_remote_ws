@@ -35,6 +35,7 @@ class StillImageHandlerImpl(BaseHandler):
         vres = computeOptions.get_int_arg("vres", 720)
         exposure_mode = computeOptions.get_argument("ex")
         awb_mode = computeOptions.get_argument("awb")
+        channel = computeOptions.get_argument("channel")
 
         bytes = BytesIO()
 
@@ -54,7 +55,23 @@ class StillImageHandlerImpl(BaseHandler):
             sleep(settle_time)
 
         self.camera.capture(bytes, format='jpeg')
+        bytes.seek(0)
+        img = Image.open(bytes)
 
+        if channel is not None:
+            r, g, b = img.split()
+            if channel == 'r':
+                img = r
+            elif channel == 'g':
+                img = g
+            elif channel == 'b':
+                img = b
+            else:
+                raise ProcessingException("Invalid image color channel '%s' specified"%channel)
+
+
+        img_bytes = BytesIO()
+        img.save(img_bytes, "JPEG")
         class SimpleResult(object):
             def __init__(self, result):
                 self.result = result
@@ -65,4 +82,4 @@ class StillImageHandlerImpl(BaseHandler):
             def toImage(self):
                 return self.result
 
-        return SimpleResult(bytes.getvalue())
+        return SimpleResult(img_bytes.getvalue())
