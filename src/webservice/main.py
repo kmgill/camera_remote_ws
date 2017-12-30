@@ -161,18 +161,8 @@ if __name__ == "__main__":
     define("address", default=webconfig.get("global", "server.socket_host"), help="Bind to the given address")
     parse_command_line()
 
-
-    log.info("""
-     ___    _____     ___
-    /_ /|  /____/ \  /_ /|       Raspberry Pi Camera Remote API
-    | | | |  __ \ /| | | |       Created by: Kevin M. Gill
- ___| | | | |__) |/  | | |__     Jet Propulsion Laboratory
-/___| | | |  ___/    | |/__ /|   Pasadena, CA, USA
-|_____|/  |_|/       |_____|/
-
-    """)
-
-
+    staticDir = webconfig.get("static", "static_dir")
+    staticEnabled = webconfig.get("static", "static_enabled") == "true"
 
     log.info("Initializing on host address '%s'" % options.address)
     log.info("Initializing on port '%s'" % options.port)
@@ -193,6 +183,10 @@ if __name__ == "__main__":
         handlers.append(
             (clazzWrapper.path(), ModularHandlerWrapper,
              dict(clazz=clazzWrapper, thread_pool=request_thread_pool)))
+
+    if staticEnabled:
+        handlers.append(
+            (r'/(.*)', tornado.web.StaticFileHandler, {'path': staticDir, "default_filename": "index.html"}))
 
     app = tornado.web.Application(
         handlers,
