@@ -28,6 +28,7 @@ class ContentTypes(object):
     JPEG = "JPEG"
     NETCDF = "NETCDF"
     ZIP = "ZIP"
+    H264 = "H264"
 
 class RequestParameters:
     OUTPUT = "output"
@@ -251,6 +252,9 @@ class CustomEncoder(json.JSONEncoder):
 class SimpleResults:
     def __init__(self, result):
         self.result = result
+
+    def isStream(self):
+        return False
 
     def toImage(self):
         pass
