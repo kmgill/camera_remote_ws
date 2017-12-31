@@ -2,15 +2,38 @@
 
 A Web API to interact with the Raspberry Pi camera module. 
 
+This project stands up a simple HTTP server built on Tornado with Python. Communication with the Raspberry Pi Camera Module is performed using the picamera Python module. 
+
+I'm currently working with a Raspberry Pi V3 from CanaKit and the PI NoIR Camera V2.1 (https://www.raspberrypi.org/products/pi-noir-camera-v2/). The code it written for Python 2.7 and utilizes the Pillow, Numpy, picamera, & Tornado packages.
+
 Goals:
- 1. Support the features of the camera module via the API
- 2. Build Quick & Simple front-end UI
- 3. Build advanced front-end user interface
- 4. Image persistance & recall
- 5. Streaming Video
- 6. Dynamic astrophotography algorithms/programmable observation sequences
- 7. ???
- 8. Profit!
+* Support the features of the camera module via the API
+
+   Full (as reasonable) support of the picamera module
+
+* Dynamic image processing pipelines
+
+   Stacking, Drizzle, sharpening, etc
+
+* Build Quick and Simple front-end UI
+
+   Simple jQuery+Bootstrap UI
+
+* Build advanced front-end user interface
+
+   More advanced React-Redux UI
+
+* Image persistance & recall
+
+   Database storage/retrieval of image and exposure metadata.
+
+* Streaming Video
+
+   Direct from camera
+
+* Telescope control
+* Dynamic astrophotography algorithms/programmable observation sequences
+
  
  ## Endpoints
  
