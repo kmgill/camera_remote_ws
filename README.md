@@ -35,3 +35,10 @@ Goals:
  |vflip|boolean|true\|false|Flip the image vertically|
  |hflip|boolean|true\|false|Flip the image horizontally|
  |st|integer|0-...|Seconds to allow auto gain to settle out|
+
+#### Example
+Request a 1920x1080 image with ISO set to 800, exposure time of 5000 microseconds, and annotated at the top left.
+
+```
+http://localhost:9090/still?iso=800&ss=5000&hres=1920&vres=1080&text=ISO: {iso}, Shutter Speed: {ss}, Time: {time}
+```
