@@ -32,3 +32,6 @@ Goals:
  |textsize|integer|1-...|Annotation text size|
  |textcolor|string|white\|black\|etc|Annotation text color|
  |time_format|string|%c\|%Y-%m-%d %H:%M:%S|Time format (python strftime)|
+ |vflip|boolean|true\|false|Flip the image vertically|
+ |hflip|boolean|true\|false|Flip the image horizontally|
+ |st|integer|0-...|Seconds to allow auto gain to settle out|
