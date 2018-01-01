@@ -94,7 +94,8 @@ class ModularHandlerWrapper(BaseRequestHandler):
             self.__process_results_static(results, useContentType)
 
     def __process_results_stream(self, results, useContentType):
-        pass
+        self.set_header("Content-Type", "video/h264")
+        results.stream(self)
 
     def __process_results_static(self, results, useContentType):
         if useContentType == ContentTypes.JSON:

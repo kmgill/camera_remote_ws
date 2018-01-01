@@ -5,3 +5,4 @@ California Institute of Technology.  All rights reserved
 
 import StillImageHandler
 import StreamHandler
+import SayHiHandler

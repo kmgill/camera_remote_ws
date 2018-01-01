@@ -13,9 +13,14 @@ import math
 
 
 class CameraNotAvailableException(Exception):
-
     def __init__(self):
         Exception.__init__(self)
+
+
+class CameraException(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg)
+
 
 class Camera:
 
@@ -23,6 +28,23 @@ class Camera:
 
     def __init__(self):
         pass
+
+    def record(self, stream, resolution=(640, 480), length=15, quality=23, wait=True):
+        if not self.mutex.acquire(wait):
+            raise CameraNotAvailableException()
+
+        try:
+            with picamera.PiCamera(resolution=resolution) as camera:
+                camera.start_recording(stream, format='h264', quality=quality)
+                print "Starting Video Recording..."
+                camera.wait_recording(length)
+                camera.stop_recording()
+                print "Stopped Video Recording"
+        except:
+            raise CameraException("Error capturing from camera")
+        finally:
+            self.mutex.release()
+
 
     def capture(self, resolution=(3264, 2464), shutter_speed=None, iso=None, awb_mode=None, exposure_mode=None, settle_time=None, hflip=False, vflip=False, sensor_mode=0, wait=True):
         if not self.mutex.acquire(wait):
@@ -74,6 +96,6 @@ class Camera:
                 return output
 
         except:
-            raise Exception("Error capturing from camera")
+            raise CameraException("Error capturing from camera")
         finally:
             self.mutex.release()

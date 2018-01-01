@@ -8,7 +8,7 @@ import numpy as np
 import os
 import sys
 from io import BytesIO
-from webmodel import BaseHandler, service_handler, ContentTypes, ProcessingException
+from webmodel import BaseHandler, service_handler, ContentTypes, ProcessingException, SimpleResults
 from time import sleep
 from fractions import Fraction
 from cam.Camera import Camera
@@ -26,13 +26,17 @@ class StillImageHandlerImpl(BaseHandler):
         BaseHandler.__init__(self)
 
     def handle(self, computeOptions, **args):
-        pass
+        stream = BytesIO()
+
+        camera = Camera()
+        camera.record(stream)
+        return VideoStreamResult(stream)
 
 
 
 class VideoStreamResult:
-    def __init__(self, result):
-        self.result = result
+    def __init__(self, stream):
+        self.__stream = stream
 
     def isStream(self):
         return True
@@ -40,8 +44,13 @@ class VideoStreamResult:
     def getContentType(self):
         return ContentTypes.H264
 
+    def stream(self, writable):
+        while self.__stream.readable() is True:
+            bytes = self.__stream.read(1024)
+            writable.write(bytes)
+
     def toJson(self):
-        pass
+        raise ProcessingException("JSON not supported for stream")
 
     def toImage(self):
-        pass
+        raise ProcessingException("Images not supported for stream")
