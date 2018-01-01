@@ -6,7 +6,7 @@ import json
 import logging
 import sys, os
 import traceback
-import tornado.web
+from tornado import gen, web, ioloop
 from tornado.options import define, options, parse_command_line
 import ConfigParser
 import pkg_resources
@@ -16,14 +16,14 @@ from webmodel import RequestObject, ProcessingException, ContentTypes
 import importlib
 
 
-class BaseRequestHandler(tornado.web.RequestHandler):
+class BaseRequestHandler(web.RequestHandler):
     path = r"/"
 
     def initialize(self, thread_pool):
         self.logger = logging.getLogger('nexus')
         self.request_thread_pool = thread_pool
 
-    @tornado.web.asynchronous
+    @web.asynchronous
     def get(self):
 
         self.request_thread_pool.apply_async(self.run)
@@ -186,9 +186,9 @@ if __name__ == "__main__":
 
     if staticEnabled:
         handlers.append(
-            (r'/(.*)', tornado.web.StaticFileHandler, {'path': staticDir, "default_filename": "index.html"}))
+            (r'/(.*)', web.StaticFileHandler, {'path': staticDir, "default_filename": "index.html"}))
 
-    app = tornado.web.Application(
+    app = web.Application(
         handlers,
         default_host=options.address,
         debug=options.debug
@@ -196,4 +196,4 @@ if __name__ == "__main__":
     app.listen(options.port)
 
     log.info("Starting HTTP listener...")
-    tornado.ioloop.IOLoop.current().start()
+    ioloop.IOLoop.current().start()

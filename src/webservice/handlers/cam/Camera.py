@@ -11,6 +11,12 @@ from time import sleep
 from fractions import Fraction
 import math
 
+
+class CameraNotAvailableException(Exception):
+
+    def __init__(self):
+        Exception.__init__(self)
+
 class Camera:
 
     mutex = Lock()
@@ -18,8 +24,10 @@ class Camera:
     def __init__(self):
         pass
 
-    def capture(self, resolution=(3264, 2464), shutter_speed=None, iso=None, awb_mode=None, exposure_mode=None, settle_time=None, hflip=False, vflip=False, sensor_mode=0):
-        self.mutex.acquire()
+    def capture(self, resolution=(3264, 2464), shutter_speed=None, iso=None, awb_mode=None, exposure_mode=None, settle_time=None, hflip=False, vflip=False, sensor_mode=0, wait=True):
+        if not self.mutex.acquire(blocking=wait):
+            raise CameraNotAvailableException()
+
         try:
 
             if shutter_speed is not None:
