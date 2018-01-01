@@ -83,6 +83,20 @@ class ModularHandlerWrapper(BaseRequestHandler):
         if callable(content_type_op):
             useContentType = content_type_op()
 
+        is_streamable = False
+        is_streamable_op = getattr(results, "isStream", None)
+        if callable(is_streamable_op):
+            is_streamable = is_streamable_op()
+
+        if is_streamable:
+            self.__process_results_stream(results, useContentType)
+        else:
+            self.__process_results_static(results, useContentType)
+
+    def __process_results_stream(self, results, useContentType):
+        pass
+
+    def __process_results_static(self, results, useContentType):
         if useContentType == ContentTypes.JSON:
             self.set_header("Content-Type", "application/json")
             try:
