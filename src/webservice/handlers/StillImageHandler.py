@@ -77,6 +77,7 @@ class StillImageHandlerImpl(BaseHandler):
         text_size = computeOptions.get_int_arg("textsize", 16)
         text_color = computeOptions.get_argument("textcolor", "white")
         time_format = computeOptions.get_argument("time_format", "%Y-%m-%d %H:%M:%S")
+        wait = computeOptions.get_boolean_arg("wait", True)
 
         camera = Camera()
         output = camera.capture(vflip=vflip,
@@ -87,7 +88,8 @@ class StillImageHandlerImpl(BaseHandler):
                                 exposure_mode=exposure_mode,
                                 awb_mode=awb_mode,
                                 settle_time=settle_time,
-                                sensor_mode=sensor_mode)
+                                sensor_mode=sensor_mode,
+                                wait=wait)
 
         img = Image.fromarray(output)
 
