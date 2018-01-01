@@ -25,7 +25,7 @@ class Camera:
         pass
 
     def capture(self, resolution=(3264, 2464), shutter_speed=None, iso=None, awb_mode=None, exposure_mode=None, settle_time=None, hflip=False, vflip=False, sensor_mode=0, wait=True):
-        if not self.mutex.acquire(blocking=wait):
+        if not self.mutex.acquire(wait):
             raise CameraNotAvailableException()
 
         try:
