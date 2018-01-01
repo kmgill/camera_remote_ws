@@ -41,23 +41,24 @@ Goals:
  Captures a still image from the camera
  
  #### Parameters
- |parameter|type|values (example)|description|
- |---------|----|------|-----------|
- |iso|integer|0-800|Capture ISO|
- |ss|integer|0-10000000|Shutter speed (microseconds)|
- |hres|integer|1-3264|Horizontal image size|
- |vres|integer|1-2464|Vertical image size|
- |ex|string| |Exposure Mode|
- |channel|char|r\|g\|b|Color channel|
- |grey|boolean|true\|false|Force greyscale|
- |md|integer|1-...|Sensor Mode (see Raspiberry Pi Camera Module Docs)|
- |text|string| |Image annotation text|
- |textsize|integer|1-...|Annotation text size|
- |textcolor|string|white\|black\|etc|Annotation text color|
- |time_format|string|%c\|%Y-%m-%d %H:%M:%S|Time format (python strftime)|
- |vflip|boolean|true\|false|Flip the image vertically|
- |hflip|boolean|true\|false|Flip the image horizontally|
- |st|integer|0-...|Seconds to allow auto gain to settle out|
+ |parameter|type|values (example)|description|default|
+ |---------|----|------|-----------|--------|
+ |iso|integer|0-800|Capture ISO||
+ |ss|integer|0-10000000|Shutter speed (microseconds)||
+ |hres|integer|1-3264|Horizontal image size|3264|
+ |vres|integer|1-2464|Vertical image size|2464|
+ |ex|string| |Exposure Mode||
+ |channel|char|r\|g\|b|Color channel||
+ |grey|boolean|true\|false|Force greyscale|false|
+ |md|integer|1-...|Sensor Mode (see Raspiberry Pi Camera Module Docs)|0|
+ |text|string| |Image annotation text||
+ |textsize|integer|1-...|Annotation text size|16|
+ |textcolor|string|white\|black\|etc|Annotation text color|white|
+ |time_format|string|%c|Time format (python strftime)|%Y-%m-%d %H:%M:%S|
+ |vflip|boolean|true\|false|Flip the image vertically|false|
+ |hflip|boolean|true\|false|Flip the image horizontally|false|
+ |st|integer|0-...|Seconds to allow auto gain to settle out|0|
+ |wait|boolean|true\|false|Waits for camera resource to become available|true|
 
 #### Example
 Request a 1920x1080 image with ISO set to 800, exposure time of 5000 microseconds, and annotated at the top left.
