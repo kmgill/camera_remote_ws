@@ -27,7 +27,6 @@ class StillImageHandlerImpl(BaseHandler):
 
     def handle(self, computeOptions, **args):
         stream = BytesIO()
-
         camera = Camera()
         camera.record(stream)
         return VideoStreamResult(stream)
@@ -45,9 +44,18 @@ class VideoStreamResult:
         return ContentTypes.H264
 
     def stream(self, writable):
+        data_written = False
         while self.__stream.readable() is True:
             bytes = self.__stream.read(1024)
-            writable.write(bytes)
+            if len(bytes) > 0:
+                data_written = True
+                writable.write("%s\r\n%s\r\n"%(hex(len(bytes))[2:], bytes))
+                writable.flush()
+
+            elif data_written is True:
+                writable.write("0\r\n\r\n")
+                writable.flush()
+                break
 
     def toJson(self):
         raise ProcessingException("JSON not supported for stream")

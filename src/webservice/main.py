@@ -94,7 +94,10 @@ class ModularHandlerWrapper(BaseRequestHandler):
             self.__process_results_static(results, useContentType)
 
     def __process_results_stream(self, results, useContentType):
+        print "Writing stream"
         self.set_header("Content-Type", "video/h264")
+        self.set_header("Transfer-Encoding", "chunked")
+        self.set_header("Connection", "Keep - Alive")
         results.stream(self)
 
     def __process_results_static(self, results, useContentType):

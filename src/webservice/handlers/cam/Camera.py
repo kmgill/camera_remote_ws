@@ -10,7 +10,7 @@ from threading import Lock
 from time import sleep
 from fractions import Fraction
 import math
-
+from thread import start_new_thread
 
 class CameraNotAvailableException(Exception):
     def __init__(self):
@@ -21,6 +21,9 @@ class CameraException(Exception):
     def __init__(self, msg):
         Exception.__init__(self, msg)
 
+
+def record_thread(camera, length):
+    camera.wait_recording(length)
 
 class Camera:
 
@@ -35,10 +38,12 @@ class Camera:
 
         try:
             with picamera.PiCamera(resolution=resolution) as camera:
-                camera.start_recording(stream, format='h264', quality=quality)
+                camera.start_recording("/home/pi/foo.h264", format='h264', quality=quality)
                 print "Starting Video Recording..."
+                start_new_thread(record_thread, (camera, length))
                 camera.wait_recording(length)
                 camera.stop_recording()
+                stream.seek(0)
                 print "Stopped Video Recording"
         except:
             raise CameraException("Error capturing from camera")
